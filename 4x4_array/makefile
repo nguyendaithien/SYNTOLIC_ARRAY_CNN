@@ -1,2 +1,6 @@
 run:
-	xrun ./rtl/*.v -access +rwc
+	iverilog ./rtl/*.v -o compile 
+	vvp compile
+wave:
+	gtkwave *.VCD
+
