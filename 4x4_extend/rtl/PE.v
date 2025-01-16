@@ -1,10 +1,10 @@
 module PE #( parameter DATA_WIDTH = 8) (
-	input clk,
-	input rst_n,
-	input set_reg,
-	input  [DATA_WIDTH - 1 : 0]  top_in,
-	input  [DATA_WIDTH - 1 : 0]  left_in,
-	output reg [DATA_WIDTH - 1 : 0]  right_out,
+	input                            clk        ,
+	input                            rst_n      ,
+	input                            set_reg    ,
+	input      [DATA_WIDTH - 1 : 0]  top_in     ,
+	input      [DATA_WIDTH - 1 : 0]  left_in    ,
+	output reg [DATA_WIDTH - 1 : 0]  right_out  ,
 	output reg [DATA_WIDTH - 1 : 0]  bottom_out
 );
 
@@ -25,3 +25,7 @@ always @(posedge clk or negedge rst_n) begin
 end
 assign sum = top_in * left_in;
 endmodule
+	
+	
+
+

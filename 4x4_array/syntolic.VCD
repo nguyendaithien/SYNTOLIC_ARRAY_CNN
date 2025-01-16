@@ -1,5 +1,5 @@
 $date
-	Fri Jan 10 19:22:21 2025
+	Tue Jan 14 20:10:07 2025
 $end
 $version
 	Icarus Verilog
@@ -344,10 +344,14 @@ $var reg 16 %# result [15:0] $end
 $var reg 8 &# right_out [7:0] $end
 $upscope $end
 $upscope $end
+$scope task compare $end
+$var integer 32 '# i [31:0] $end
+$upscope $end
 $upscope $end
 $enddefinitions $end
 #0
 $dumpvars
+bx '#
 b0 &#
 b0 %#
 b0 $#
@@ -1866,6 +1870,7 @@ b1100 y
 #360
 0&
 #365
+b10000 '#
 b100 -
 b100 ,
 b10000000000000000000000000000011 +

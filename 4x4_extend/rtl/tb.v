@@ -11,10 +11,10 @@ module tb;
   reg [3:0] in_valid_B;
 
 	parameter M_SIZE = 4;
-	parameter K_SIZE = 4;
 	parameter N_SIZE = 4;
+	parameter K_SIZE = 16;
 
-TOP #(.DATA_WIDTH (8), .WIDTH(4), .HEIGHT(4), .BUFFER_SIZE(4)) top (
+TOP #(.DATA_WIDTH (8), .WIDTH(4), .HEIGHT(4), .BUFFER_SIZE(4), .M_SIZE(M_SIZE), .N_SIZE(N_SIZE), .K_SIZE(K_SIZE)) top (
 	.clk           (clk          ),
 	.rst_n         (rst_n        ),
 	.data_valid    (data_valid   ),
@@ -37,10 +37,20 @@ initial begin
 	#40 data_valid = 1;
 	#10 data_valid = 0;
 end
-reg [7:0] matrix_A [15:0];
-reg [7:0] matrix_B [15:0];
-reg [7:0] matrix_C [15:0];
-reg [7:0] golden_matrix [15:0];
+reg [7:0] matrix_A [M_SIZE*K_SIZE-1:0];
+reg [7:0] matrix_B [K_SIZE*N_SIZE-1:0];
+reg [7:0] matrix_C [M_SIZE*N_SIZE:0];
+reg [7:0] golden_matrix [M_SIZE*K_SIZE:0];
+initial begin
+	$readmemb("./script/matrix_C_bin.txt",golden_matrix);
+end
+initial begin
+	$readmemb("./script/matrix_A_bin.txt",matrix_A);
+end
+initial begin
+	$readmemb("./script/matrix_B_bin.txt",matrix_B);
+end
+
 // COMPARE 2 MATRIX
 task compare;
 	integer  i;
@@ -56,40 +66,38 @@ task compare;
 		$display("PASS TEST");
 	end
 endtask
+
 always @(posedge done) begin
 	if(done) begin
 		compare();
 	end
 end
-
-
 initial begin
-	$readmemb("matrix_bin_C.txt",golden_matrix);
-end
-initial begin
-	$readmemb("matrix_bin_A.txt",matrix_A);
-end
-initial begin
-	$readmemb("matrix_bin_B.txt",matrix_B);
-end
-initial begin
-	#1000 $finish;
+	#10000 $finish;
 end
 integer i;
-//initial begin
-//#100
-// for (i = 0; i < 16; i = i + 1) begin
-//        $display("matrix_A[%0d] = %d", i, matrix_A[i]);
-//    end
-// for (i = 0; i < 16; i = i + 1) begin
-//        $display("matrix_B[%0d] = %d", i, matrix_B[i]);
-//    end
-//end
-// for (i = 0; i < 16; i = i + 1) begin
-//        $display("matrix_A[%0d] = %d", i, matrix_A[i]);
-//    end
-reg [4:0] add_A_cnt;
+reg [6:0] add_A_cnt;
+reg [6:0] add_B_cnt;
 reg read_reg;
+reg read_reg_1;
+always @(posedge clk or negedge rst_n)
+  begin
+    if (!rst_n)
+    begin
+      add_B_cnt  <= 0;
+      read_reg_1  <= 0;
+    end
+    else
+    begin
+     read_reg_1 <= read_data;
+      if ((start_compute) || add_B_cnt == N_SIZE*K_SIZE)
+        add_B_cnt   <= 0;
+      else if (read_data)
+        add_B_cnt   <= add_B_cnt + 1;
+      else
+        add_B_cnt   <= add_B_cnt;
+    end
+  end
 always @(posedge clk or negedge rst_n)
   begin
     if (!rst_n)
@@ -100,7 +108,7 @@ always @(posedge clk or negedge rst_n)
     else
     begin
      read_reg <= read_data;
-      if ((start_compute) || add_A_cnt == 16)
+      if ((start_compute) || add_A_cnt == M_SIZE*K_SIZE)
         add_A_cnt   <= 0;
       else if (read_data)
         add_A_cnt   <= add_A_cnt + 1;
@@ -108,15 +116,13 @@ always @(posedge clk or negedge rst_n)
         add_A_cnt   <= add_A_cnt;
     end
   end
-assign data_in_A = (read_reg == 1)? matrix_A[add_A_cnt - 1] : 0; 
-assign data_in_B = (read_reg == 1)? matrix_B[add_A_cnt - 1] : 0; 
+assign data_in_A = (read_reg   == 1)? matrix_A[add_A_cnt - 1] : 0; 
+assign data_in_B = (read_reg_1 == 1)? matrix_B[add_B_cnt - 1] : 0; 
 
 integer j;
-integer file; // Khai báo biến `file` ở đầu khối initial
+integer file; 
 initial begin
-    wait(done); // Chờ tín hiệu `done`
-
-    // Lưu giá trị từ các PE vào ma trận `matrix_C`
+    wait(done); 
     matrix_C[0] = top.pe00.result;
     matrix_C[1] = top.pe01.result;
     matrix_C[2] = top.pe02.result;
