@@ -7,11 +7,13 @@ module TOP #(parameter DATA_WIDTH = 8, WIDTH = 4, HEIGHT = 4, BUFFER_SIZE = 4, M
 	input [DATA_WIDTH-1:0] data_in_B             ,
 	output wire done,
 	output wire read_data
- // input [3:0] in_valid_A,
- // input [3:0] in_valid_B
 );
-	wire [3:0] in_valid_A;
-	wire [3:0] in_valid_B;	
+	wire [3:0] in_valid_A ;
+	wire [3:0] in_valid_B ;	
+  wire data_output_valid;
+
+	wire reset_reg                           ;
+	wire reset_register = (rst_n & reset_reg);
 
 // mux select matrix A
 	wire [DATA_WIDTH - 1:0] data_to_mux_1;
@@ -128,10 +130,10 @@ module TOP #(parameter DATA_WIDTH = 8, WIDTH = 4, HEIGHT = 4, BUFFER_SIZE = 4, M
 	assign output_33 = pe33.result;
 
 
-	wire       in_valid_C;
- 	wire       sel_mux;
-	wire [2:0] set_reg_wdata;
-	wire set_write_data;
+  wire       in_valid_C    ;
+  wire       sel_mux       ;
+  wire [2:0] set_reg_wdata ;
+  wire set_write_data      ;
 
 	wire set_reg_wdata_1;
 	wire set_reg_wdata_2;
@@ -157,7 +159,7 @@ module TOP #(parameter DATA_WIDTH = 8, WIDTH = 4, HEIGHT = 4, BUFFER_SIZE = 4, M
 // row 1
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe00 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_registe  ) ,
   .set_reg    (set_reg_path_1 ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (bf_to_pe_5     ) ,
@@ -169,7 +171,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe00 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe01 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_path_2 ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (bf_to_pe_6     ) ,
@@ -181,7 +183,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe01 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe02 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_path_3 ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (bf_to_pe_7     ) ,
@@ -193,7 +195,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe02 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe03 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_path_4 ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (bf_to_pe_8     ) ,
@@ -206,7 +208,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe03 (
 // row 2
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe10 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_10     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe00         ) ,
@@ -218,7 +220,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe10 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe11 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_11     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe01         ) ,
@@ -230,7 +232,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe11 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe12 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_12     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe02         ) ,
@@ -242,7 +244,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe12 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe13 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_13     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe03         ) ,
@@ -255,7 +257,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe13 (
 // row 3
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe20 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_20     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe10         ) ,
@@ -267,7 +269,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe20 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe21 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_21     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe11         ) ,
@@ -279,7 +281,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe21 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe22 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_22     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe12         ) ,
@@ -291,7 +293,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe22 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe23 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_23     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe13         ) ,
@@ -304,7 +306,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe23 (
 // row 4
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe30 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_30     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe20         ) ,
@@ -316,7 +318,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe30 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe31 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_31     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe21         ) ,
@@ -328,7 +330,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe31 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe32 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_32     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe22         ) ,
@@ -340,7 +342,7 @@ PE #(.DATA_WIDTH(DATA_WIDTH)) pe32 (
 );
 PE #(.DATA_WIDTH(DATA_WIDTH)) pe33 (
   .clk        (clk            ) ,
-  .rst_n      (rst_n          ) ,
+  .rst_n      (reset_register ) ,
   .set_reg    (set_reg_33     ) ,
   .sel_mux    (sel_mux        ) ,
   .top_in     (B_pe23         ) ,
@@ -441,23 +443,25 @@ BUFFER #(.DATA_WIDTH(8), .BUFFER_SIZE (4)) buffer_row_B4 (
 );
 
 controller #(.ROW_NUM(4), .WIDTH(4), .HEIGHT(4), .M_SIZE(M_SIZE), .N_SIZE(N_SIZE), .K_SIZE(K_SIZE)) control (
-	.clk            ( clk            ) ,
-	.rst_n          ( rst_n          ) ,
-	.data_valid     ( data_valid     ) ,
-	.in_valid_A     ( in_valid_A     ) ,
-	.in_valid_B     ( in_valid_B     ) ,
-	.in_valid_C     ( in_valid_C     ) ,
-	.read_data      ( read_data      ) ,
-	.set_reg_path_1 ( set_reg_path_1 ) ,
-	.set_reg_path_2 ( set_reg_path_2 ) ,
-	.set_reg_path_3 ( set_reg_path_3 ) ,
-	.set_reg_path_4 ( set_reg_path_4 ) ,
-	.set_reg_path_5 ( set_reg_path_5 ) ,
-	.set_reg_path_6 ( set_reg_path_6 ) ,
-	.set_reg_path_7 ( set_reg_path_7 ) ,
-	.done           ( done           ) ,
-	.sel_mux        ( sel_mux        ) ,
-	.set_reg_wdata  (set_reg_wdata   ) ,
-	.set_write_data (set_write_data  )
+	.clk              ( clk              ) ,
+	.rst_n            ( rst_n            ) ,
+	.data_valid       ( data_valid       ) ,
+	.in_valid_A       ( in_valid_A       ) ,
+	.in_valid_B       ( in_valid_B       ) ,
+	.in_valid_C       ( in_valid_C       ) ,
+	.read_data        ( read_data        ) ,
+	.set_reg_path_1   ( set_reg_path_1   ) ,
+	.set_reg_path_2   ( set_reg_path_2   ) ,
+	.set_reg_path_3   ( set_reg_path_3   ) ,
+	.set_reg_path_4   ( set_reg_path_4   ) ,
+	.set_reg_path_5   ( set_reg_path_5   ) ,
+	.set_reg_path_6   ( set_reg_path_6   ) ,
+	.set_reg_path_7   ( set_reg_path_7   ) ,
+	.done             ( done             ) ,
+	.sel_mux          ( sel_mux          ) ,
+	.set_reg_wdata    (set_reg_wdata     ) ,
+	.set_write_data   (set_write_data    ) ,
+	.data_output_valid(data_output_valid ),
+	.reset_reg        (reset_reg         )
 );
 endmodule

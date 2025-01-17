@@ -266,31 +266,31 @@ PE #(.DATA_WIDTH(8)) pe23 (
 );
 	// Array of PE, four row
 PE #(.DATA_WIDTH(8)) pe30 (
-	.clk        ( clk        ) ,
-	.rst_n      ( rst_n      ) ,
-	.top_in     ( B_pe20     ) ,
+	.clk        ( clk            ) ,
+	.rst_n      ( rst_n          ) ,
+	.top_in     ( B_pe20         ) ,
 	.set_reg    ( set_reg_path_4 ) ,
-	.left_in    ( bf_to_pe_4 ) ,
-	.right_out  ( R_pe30     ) ,
-	.bottom_out (            ) 
+	.left_in    ( bf_to_pe_4     ) ,
+	.right_out  ( R_pe30         ) ,
+	.bottom_out (                )
 );
 PE #(.DATA_WIDTH(8)) pe31 (
-	.clk        ( clk        ) ,
-	.rst_n      ( rst_n      ) ,
-	.top_in     ( B_pe21     ) ,
+	.clk        ( clk            ) ,
+	.rst_n      ( rst_n          ) ,
+	.top_in     ( B_pe21         ) ,
 	.set_reg    ( set_reg_path_5 ) ,
-	.left_in    ( R_pe30     ) ,
-	.right_out  ( R_pe31     ) ,
-	.bottom_out (            ) 
+	.left_in    ( R_pe30         ) ,
+	.right_out  ( R_pe31         ) ,
+	.bottom_out (                )
 );
 PE #(.DATA_WIDTH(8)) pe32 (
-	.clk        ( clk        ) ,
-	.rst_n      ( rst_n      ) ,
-	.top_in     ( B_pe22     ) ,
+	.clk        ( clk            ) ,
+	.rst_n      ( rst_n          ) ,
+	.top_in     ( B_pe22         ) ,
 	.set_reg    ( set_reg_path_6 ) ,
-	.left_in    ( R_pe31     ) ,
-	.right_out  ( R_pe32     ) ,
-	.bottom_out (            ) 
+	.left_in    ( R_pe31         ) ,
+	.right_out  ( R_pe32         ) ,
+	.bottom_out (                )
 );
 PE #(.DATA_WIDTH(8)) pe33 (
 	.clk        ( clk        ) ,
